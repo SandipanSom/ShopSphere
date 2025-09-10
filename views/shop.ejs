@@ -1,0 +1,110 @@
+<%- include('./partials/header') %>
+
+<% if (success) { %>
+    <div class="fixed top-5 left-1/2 transform -translate-x-1/2 z-50 px-4 py-3 rounded-lg bg-green-500 shadow-lg">
+        <span class="text-white font-medium">
+            <i class="ri-check-circle-line mr-2"></i><%= success %>
+        </span>
+    </div>
+<% } %>
+
+<% if (error) { %>
+    <div class="fixed top-5 left-1/2 transform -translate-x-1/2 z-50 px-4 py-3 rounded-lg bg-red-500 shadow-lg">
+        <span class="text-white font-medium">
+            <i class="ri-error-warning-line mr-2"></i><%= error %>
+        </span>
+    </div>
+<% } %>
+
+<div class="min-h-screen bg-gray-50">
+    <div class="max-w-7xl mx-auto px-6 py-8">
+        <div class="flex gap-8">
+            <!-- Sidebar -->
+            <div class="w-1/4 bg-white rounded-xl shadow-sm p-6 h-fit sticky top-8">
+                <!-- Sort Section -->
+                <div class="mb-8">
+                    <h3 class="text-lg font-semibold mb-4">Sort By</h3>
+                    <form action="/shop">
+                        <select class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" name="sortby" onchange="this.form.submit()">
+                            <option value="popular">Popular</option>
+                            <option value="newest">Newest</option>
+                            <option value="price-low">Price: Low to High</option>
+                            <option value="price-high">Price: High to Low</option>
+                        </select>
+                    </form>
+                </div>
+
+                <!-- Categories -->
+                <div class="mb-8">
+                    <h3 class="text-lg font-semibold mb-4">Categories</h3>
+                    <div class="space-y-3">
+                        <a href="#" class="block text-gray-600 hover:text-blue-600 hover:bg-blue-50 px-3 py-2 rounded-md transition">New Collection</a>
+                        <a href="#" class="block text-gray-600 hover:text-blue-600 hover:bg-blue-50 px-3 py-2 rounded-md transition">All Products</a>
+                        <a href="#" class="block text-gray-600 hover:text-blue-600 hover:bg-blue-50 px-3 py-2 rounded-md transition">Discounted Products</a>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Filters</h3>
+                    <div class="space-y-3">
+                        <a href="#" class="block text-gray-600 hover:text-blue-600 hover:bg-blue-50 px-3 py-2 rounded-md transition">Availability</a>
+                        <a href="#" class="block text-gray-600 hover:text-blue-600 hover:bg-blue-50 px-3 py-2 rounded-md transition">Discount</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Grid -->
+            <div class="flex-1">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900">All Products</h2>
+                    <p class="text-gray-600 mt-1"><%= products.length %> products found</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <% products.forEach(function(product){ %>
+                        <div class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition group">
+                            <!-- Product Image -->
+                            <div class="aspect-square bg-[<%= product.bgcolor %>] p-6 flex items-center justify-center">
+                                <img class="h-40 w-auto object-contain group-hover:scale-105 transition duration-300" 
+                                     src="data:image/jpeg;base64,<%= product.image.toString('base64') %>" 
+                                     alt="<%= product.name %>">
+                            </div>
+                            
+                            <!-- Product Info -->
+                            <div class="p-4 bg-[<%= product.panelcolor %>]">
+                                <div class="flex justify-between items-start">
+                                    <div class="flex-1">
+                                        <h3 class="font-semibold text-[<%= product.textcolor %>] mb-1">
+                                            <%= product.name %>
+                                        </h3>
+                                        <p class="text-[<%= product.textcolor %>] font-bold text-lg">
+                                            ₹<%= product.price ? product.price.toLocaleString() : "N/A" %>
+                                        </p>
+                                    </div>
+                                    <a href="addtocart/<%= product._id %>" 
+                                       class="ml-3 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md hover:shadow-lg hover:scale-110 transition group">
+                                        <i class="ri-shopping-cart-line text-gray-700 group-hover:text-blue-600"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+
+                <!-- Empty State -->
+                <% if (products.length === 0) { %>
+                    <div class="text-center py-12">
+                        <div class="w-24 h-24 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+                            <i class="ri-shopping-bag-line text-3xl text-gray-400"></i>
+                        </div>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">No products found</h3>
+                        <p class="text-gray-600">Try adjusting your filters or search terms.</p>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('./partials/footer') %>

@@ -1,10 +1,15 @@
 const mongoose= require("mongoose");
+const dbgr= require("debug")("development:mongoose");
+const config= require("config");
 
 
-mongoose.connect("mongodb://127.0.0.1:27017/ShopSphere").
-then(() => console.log("mongo connected") //this part is only to check if mongo is connected or not
-).
-catch((err)=>console.log(err))
+mongoose.connect(`${config.get("MONGODB_URI")}/ShopSphere`).
+then(function(){
+    dbgr("connected");
+}).
+catch(function(err){
+    dbgr(err);
+});
 
 
 module.exports= mongoose.connection;

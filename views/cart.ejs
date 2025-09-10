@@ -1,0 +1,127 @@
+<%- include('./partials/header') %>
+
+<div class="min-h-screen bg-gray-50 py-8 px-6">
+    <div class="max-w-6xl mx-auto flex gap-8">
+        
+        <!-- Cart Items -->
+        <div class="w-2/3 bg-white rounded-lg shadow-sm p-6">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <i class="ri-shopping-cart-line mr-3 text-blue-600"></i>
+                Your Cart (<%= user.cart.length %> items)
+            </h2>
+            
+            <% if (user.cart.length > 0) { %>
+                <% user.cart.forEach(function(product) { %>
+                    <div class="border rounded-lg p-4 mb-4 hover:shadow-md transition">
+                        <div class="flex gap-4">
+                            <!-- Product Image -->
+                            <div class="w-24 h-24 bg-gray-100 rounded-lg flex-shrink-0">
+                                <img src="data:image/jpeg;base64,<%= product.image.toString('base64') %>" 
+                                     alt="<%= product.name %>" 
+                                     class="w-full h-full object-cover rounded-lg">
+                            </div>
+                            
+                            <!-- Product Info -->
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-lg mb-1"><%= product.name %></h3>
+                                <p class="text-gray-600 text-sm mb-3">Restaurant Special Item</p>
+                                
+                                <div class="flex justify-between items-center">
+                                    <!-- Quantity Controls -->
+                                    <div class="flex items-center gap-3">
+                                        <button class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300">
+                                            <i class="ri-subtract-line"></i>
+                                        </button>
+                                        <span class="px-3 py-1 bg-gray-100 rounded font-medium">01</span>
+                                        <button class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center hover:bg-blue-700">
+                                            <i class="ri-add-line"></i>
+                                        </button>
+                                    </div>
+                                    
+                                    <!-- Price & Remove -->
+                                    <div class="flex items-center gap-4">
+                                        <span class="text-xl font-bold">₹<%= product.price %></span>
+                                        <button class="text-red-500 hover:text-red-700 p-1">
+                                            <i class="ri-delete-bin-line"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+                
+                <div class="border-t pt-4 mt-6">
+                    <a href="/shop" class="text-blue-600 hover:text-blue-700 flex items-center">
+                        <i class="ri-arrow-left-line mr-2"></i>Continue Shopping
+                    </a>
+                </div>
+                
+            <% } else { %>
+                <div class="text-center py-12">
+                    <i class="ri-shopping-cart-line text-6xl text-gray-300 mb-4"></i>
+                    <h3 class="text-lg font-medium mb-2">Your cart is empty</h3>
+                    <p class="text-gray-600 mb-6">Add some items to get started!</p>
+                    <a href="/shop" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 inline-flex items-center">
+                        <i class="ri-shopping-bag-line mr-2"></i>Start Shopping
+                    </a>
+                </div>
+            <% } %>
+        </div>
+
+        <!-- Price Summary -->
+        <div class="w-1/3 bg-white rounded-lg shadow-sm p-6 h-fit">
+            <h3 class="text-xl font-bold mb-6 flex items-center">
+                <i class="ri-calculator-line mr-3 text-green-600"></i>
+                Price Summary
+            </h3>
+            
+            <% 
+            const totalMRP = user.cart.reduce((total, product) => total + product.price, 0);
+            const platformFee = user.cart.length > 0 ? 20 : 0;
+            const finalAmount = totalMRP + platformFee;
+            %>
+            
+            <div class="space-y-3 mb-6">
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Total MRP</span>
+                    <span>₹<%= totalMRP %></span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Discount</span>
+                    <span class="text-green-600">₹0</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Platform Fee</span>
+                    <span>₹<%= platformFee %></span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Shipping</span>
+                    <span class="text-green-600">FREE</span>
+                </div>
+                
+                <div class="border-t pt-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-lg font-semibold">Total Amount</span>
+                        <span class="text-2xl font-bold text-green-600">₹<%= finalAmount %></span>
+                    </div>
+                </div>
+            </div>
+            
+            <% if (user.cart.length > 0) { %>
+                <form action="/checkout" method="POST">
+                    <button class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 font-semibold mb-3">
+                        Proceed to Checkout
+                    </button>
+                </form>
+                
+                <div class="flex items-center text-sm text-gray-600 mt-4">
+                    <i class="ri-shield-check-line text-green-600 mr-2"></i>
+                    100% secure payments
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<%- include('./partials/footer') %>
